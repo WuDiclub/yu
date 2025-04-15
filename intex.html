@@ -1,0 +1,1363 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>刷題小網站</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 2em;
+      background-color: #f0f0f0;
+    }
+    .question-box {
+      background-color: #fff;
+      padding: 2em;
+      border-radius: 10px;
+      max-width: 600px;
+      margin: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .option {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      background-color: #f9f9f9;
+      transition: all 0.2s;
+    }
+    .option:hover {
+      background-color: #e0e0e0;
+    }
+    .correct {
+      background-color: #d4edda !important;
+      border-color: #28a745 !important;
+      color: #155724;
+    }
+    .incorrect {
+      background-color: #f8d7da !important;
+      border-color: #dc3545 !important;
+      color: #721c24;
+    }
+    button {
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 6px;
+      background-color: #007bff;
+      color: white;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="question-box">
+    <div id="question">載入中...</div>
+    <div id="options"></div>
+    <button onclick="nextQuestion()">下一題</button>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        question: "1. 測量高真空所需的真空計為下列何者？",
+        options: {
+          A: "彭甯冷陰極真控計",
+          B: "熱電耦真空計",
+          C: "派藍尼真空計",
+          D: "真控錶"
+        },
+        answer: "A"
+      },
+      {
+        question: "2. 到達高真空系統所需的真空計組合為何？",
+        options: {
+          A: "熱電耦真空計＋派藍尼真空計",
+          B: "熱電耦真空計＋冷陰極真空計",
+          C: "派藍尼真空計",
+          D: "真空錶+派藍尼真空計"
+        },
+        answer: "B"
+      },
+      {
+        question: "3. 何者非真空計常用的單位？",
+        options: {
+          A: "Pa",
+          B: "Torr",
+          C: "mbar",
+          D: "atm"
+        },
+        answer: "D"
+      },
+{
+  question: "4. 下列何種金屬材料常見於真空中？",
+  options: {
+    A: "3003鋁合金",
+    B: "304不鏽鋼",
+    C: "鑄鐵",
+    D: "青銅"
+  },
+  answer: "B"
+},
+{
+  question: "5. 下列何者是選擇無氧銅為真空腔體材料的優點？",
+  options: {
+    A: "重量",
+    B: "機械強度",
+    C: "抗腐蝕性",
+    D: "導熱性"
+  },
+  answer: "D"
+},
+{
+  question: "6. 下列何者是選擇鋁合金為真空腔體材料的優點？",
+  options: {
+    A: "加工速度",
+    B: "銲接變形量控制",
+    C: "荷重強度",
+    D: "銲接難易度"
+  },
+  answer: "A"
+},
+{
+  question: "7. 下列何者是選擇無氧銅為真空材料的缺點？",
+  options: {
+    A: "高導電性",
+    B: "無磁性",
+    C: "高熱傳性",
+    D: "銲接難易度"
+  },
+  answer: "D"
+},
+{
+  question: "8. 下列何者是常用於真空中的非金屬材料？",
+  options: {
+    A: "保麗龍膠",
+    B: "FRP",
+    C: "陶瓷（氧化鋁等）",
+    D: "石綿"
+  },
+  answer: "C"
+},
+{
+  question: "9. 下列何種化學物質會用於真空元件之化學清洗？",
+  options: {
+    A: "碳酸氫鈉（NaHCO₃）",
+    B: "醋酸（CH₃COOH）",
+    C: "氫氧化鈉（NaOH）",
+    D: "鹽酸（HCl）"
+  },
+  answer: "C"
+},
+{
+  question: "10. 下列哪一項不會被用作真空法蘭的墊圈？",
+  options: {
+    A: "不銹鋼環",
+    B: "鋁線",
+    C: "Helicoflex",
+    D: "無氧銅墊片（OFHC gasket）"
+  },
+  answer: "A"
+},
+{
+  question: "11. 下列哪一項接合方式，不會用在金屬真空腔零件之製作上？",
+  options: {
+    A: "真空膠黏合",
+    B: "爆接",
+    C: "TIG（氬銲）",
+    D: "雷射銲接"
+  },
+  answer: "A"
+},
+{
+  question: "12. 鋁合金鋁焊接前，下列何者為第一道程序？",
+  options: {
+    A: "酸洗",
+    B: "鹼洗",
+    C: "刮除氧化層",
+    D: "烘乾"
+  },
+  answer: "B"
+},
+{
+  question: "13. 下列何者為薄膜材料？",
+  options: {
+    A: "金屬薄膜材料",
+    B: "無機、陶瓷薄膜材料",
+    C: "半導體薄膜材料",
+    D: "以上皆是"
+  },
+  answer: "D"
+},
+{
+  question: "14. 結構性金屬薄膜材料—硬質膜 成膜方式下列何者為非？",
+  options: {
+    A: "陽極",
+    B: "CVD",
+    C: "PVD",
+    D: "電漿噴塗"
+  },
+  answer: "A"
+},
+{
+  question: "15. 真空蒸鍍及濺鍍易形成那類型薄膜？",
+  options: {
+    A: "金屬薄膜",
+    B: "半導體薄膜",
+    C: "TCO薄膜",
+    D: "非晶態薄膜"
+  },
+  answer: "D"
+},
+{
+  question: "16. 下列何者為常用TCO薄膜材料？",
+  options: {
+    A: "TiN（氮化鈦）",
+    B: "ITO（銦錫合金）",
+    C: "Ni/Cr（鎳鉻合金）",
+    D: "SiC（碳化矽）"
+  },
+  answer: "B"
+},
+{
+  question: "17. 選擇耐磨損膜層之條件下列何者為非？",
+  options: {
+    A: "高硬度",
+    B: "化學穩定性佳",
+    C: "高摩擦係數",
+    D: "高熱化學穩定性"
+  },
+  answer: "C"
+},
+{
+  question: "18. 賽貝克效應現象為何？",
+  options: {
+    A: "異種金屬間因溫差產生電動勢",
+    B: "異種金屬結合點流過電流時，吸收熱量之現象",
+    C: "同種金屬電流因溫差而有吸收熱量之現象",
+    D: "無"
+  },
+  answer: "A"
+},
+{
+  question: "19. 下列4種金屬何者TCR（電阻溫度係數）最大？",
+  options: {
+    A: "金",
+    B: "銀",
+    C: "銅",
+    D: "鋁"
+  },
+  answer: "B"
+},
+{
+  question: "20. 破壞性干涉是把抗反射膜的厚度控制在可見光波長的多少便可產生破壞性干涉？",
+  options: {
+    A: "1/2",
+    B: "1/4",
+    C: "2/3",
+    D: "0.1"
+  },
+  answer: "B"
+},
+{
+  question: "21. 金剛石（鑽石）薄膜維氏硬度HV值可達？",
+  options: {
+    A: "10000",
+    B: "5000",
+    C: "3500",
+    D: "4000"
+  },
+  answer: "A"
+},
+{
+  question: "22. 軟質金屬有何特點？",
+  options: {
+    A: "以上皆是",
+    B: "不易變形",
+    C: "高蒸氣壓",
+    D: "低磨擦係數"
+  },
+  answer: "D"
+},
+{
+  question: "23. 真空材料選擇，主要考量因素？",
+  options: {
+    A: "釋氣量多少",
+    B: "易加工否",
+    C: "抗壓強度",
+    D: "成本"
+  },
+  answer: "A"
+},
+{
+  question: "24. 金屬閥件內，何處最易受到酸鹼腐蝕？",
+  options: {
+    A: "入口處",
+    B: "O-ring",
+    C: "銲接處",
+    D: "封合面"
+  },
+  answer: "C"
+},
+{
+  question: "25. Al鋁陽極處理後，釋氣壓？",
+  options: {
+    A: "變好",
+    B: "變差",
+    C: "比SUS不鏽鋼好",
+    D: "與SUS不鏽鋼一樣好"
+  },
+  answer: "B"
+},
+{
+  question: "26. 高真空範圍內，氣體含量以何種為主？",
+  options: {
+    A: "N₂",
+    B: "O₂",
+    C: "H₂",
+    D: "H₂O"
+  },
+  answer: "D"
+},
+{
+  question: "27. Al鋁比SUS不鏽鋼適用在超高真空，主要原因為？",
+  options: {
+    A: "加工易",
+    B: "含氧量少",
+    C: "成本低",
+    D: "重量輕"
+  },
+  answer: "B"
+},
+{
+  question: "28. 真空用油脂不適合用在下列場合？",
+  options: {
+    A: "電漿",
+    B: "升溫處",
+    C: "超高真空",
+    D: "以上皆是"
+  },
+  answer: "D"
+},
+{
+  question: "29. O-ring 不適合用在超高真空系統，原因為？",
+  options: {
+    A: "不耐高溫",
+    B: "釋氣嚴重",
+    C: "柔軟",
+    D: "易裂化"
+  },
+  answer: "B"
+},
+{
+  question: "30. 粉末冶金可否用在高真空？",
+  options: {
+    A: "可",
+    B: "不可",
+    C: "清洗烘烤後可用",
+    D: "視種類而定"
+  },
+  answer: "B"
+},
+{
+  question: "31. 材料在真空之適用性，主要以何為量？",
+  options: {
+    A: "釋氣量",
+    B: "加工難易",
+    C: "成本",
+    D: "機械強度"
+  },
+  answer: "A"
+},
+{
+  question: "32. 下列何種非金屬材料常見於真空中？",
+  options: {
+    A: "Viton",
+    B: "竹子",
+    C: "FRP",
+    D: "保麗龍"
+  },
+  answer: "A"
+},
+{
+  question: "33. 絕緣材料（例如陶瓷）與金屬接合時，選擇使用的金屬考慮點主要為何？",
+  options: {
+    A: "防止腐蝕",
+    B: "外觀色澤漂亮",
+    C: "熱膨脹系數與絕緣材料相近",
+    D: "重量輕"
+  },
+  answer: "C"
+},
+{
+  question: "34. 下列何者是選擇不銹鋼為真空腔體材料的缺點？",
+  options: {
+    A: "重量",
+    B: "機械強度",
+    C: "抗腐蝕性",
+    D: "價格"
+  },
+  answer: "A"
+},
+{
+  question: "35. 鋁合金鍍鋁前，下列何者為最後一道程序？",
+  options: {
+    A: "酸洗",
+    B: "磷洗",
+    C: "去除氧化層",
+    D: "烘乾"
+  },
+  answer: "C"
+},
+{
+  question: "36. 下列何者是選擇銅合金為真空腔體材料的缺點？",
+  options: {
+    A: "加工速度",
+    B: "銲接難易度",
+    C: "重量",
+    D: "導熱性"
+  },
+  answer: "B"
+},
+{
+  question: "37. 下列何者可用於真空中隔離高電壓？",
+  options: {
+    A: "保麗龍",
+    B: "PVC",
+    C: "陶瓷（氧化鋁等）",
+    D: "石綿"
+  },
+  answer: "C"
+},
+{
+  question: "38. 下列何種化學劑沒有被用在金屬真空元件之清潔？",
+  options: {
+    A: "氧氣水",
+    B: "Citranox",
+    C: "99.5%試藥級酒精",
+    D: "鹽酸(HCl)"
+  },
+  answer: "D"
+},
+{
+  question: "39. 下列哪一項不是封合真空法蘭的墊圈？",
+  options: {
+    A: "橡皮筋",
+    B: "Diamond gasket",
+    C: "Helicoflex",
+    D: "無氧銅墊片（OFHC gasket）"
+  },
+  answer: "A"
+},
+{
+  question: "40. 下列哪一項接合方式，不是永久性結合？",
+  options: {
+    A: "CF法蘭",
+    B: "爆接",
+    C: "TIG（氩銲）",
+    D: "真空硬銲（brazing）"
+  },
+  answer: "A"
+},
+{
+  question: "41. 鋁合金銲接前，下列程序何者不需要？",
+  options: {
+    A: "酸洗",
+    B: "退火",
+    C: "刮除氧化層",
+    D: "烘乾"
+  },
+  answer: "B"
+},
+{
+  question: "42. 國際標準（SI）壓力單位為 Pa（Pascal）。一大氣壓（1 atm）為多少 Pa？",
+  options: {
+    A: "133.3",
+    B: "760",
+    C: "1000",
+    D: "101325"
+  },
+  answer: "D"
+},
+{
+  question: "43. 在直徑 1 米的真空腔中，抽真空到低於多少氣壓時氣體分子平均自由徑大於真空腔直徑？",
+  options: {
+    A: "0.05 mTorr",
+    B: "0.5 mTorr",
+    C: "5 mTorr",
+    D: "50 mTorr"
+  },
+  answer: "A"
+},
+{
+  question: "44. 以下何者為是？",
+  options: {
+    A: "真空系統是指幫浦的串連",
+    B: "真空系統是一完善系統不需要加裝真空計辨識真空度",
+    C: "真空計在真空系統中是辦識真空度的重要指標",
+    D: "高真空計通常單獨使用"
+  },
+  answer: "C"
+},
+{
+  question: "45. 真空系統中若氣體流動形成黏滯流狀態時，氣體分子的平均自由徑約為腔體直徑的幾倍？",
+  options: {
+    A: "0.01",
+    B: "0.1",
+    C: "1",
+    D: "10"
+  },
+  answer: "A"
+},
+{
+  question: "46. 真空系統抽氣受到抽氣管路氣導的限制，以下的答案中哪一個最嚴重？",
+  options: {
+    A: "黏滯流",
+    B: "層流",
+    C: "過渡流",
+    D: "分子流"
+  },
+  answer: "D"
+},
+{
+  question: "47. 何種真空計可設計為單純機械式？",
+  options: {
+    A: "彭甯冷陰極真空計",
+    B: "熱電耦真空計",
+    C: "派藍尼真空計",
+    D: "真空錶"
+  },
+  answer: "D"
+},
+{
+  question: "48. 常溫（25°C）下，氮氣（N₂）的速度約為多少 m/s？",
+  options: {
+    A: "47.3",
+    B: "473",
+    C: "4730",
+    D: "47300"
+  },
+  answer: "B"
+},
+{
+  question: "49. 常溫（25°C）下，氫氣（H₂）的速度為氧氣（O₂）的多少倍？",
+  options: {
+    A: "0.5",
+    B: "2",
+    C: "4",
+    D: "8"
+  },
+  answer: "C"
+},
+{
+  question: "50. 常溫下一根長 100cm、內徑 4cm 真空圓管的氣導（Conductance）約為多少 L/s？以下哪個答案最靠近？",
+  options: {
+    A: "1",
+    B: "10",
+    C: "100",
+    D: "1000"
+  },
+  answer: "B"
+},
+  {
+    "question": "60. 真空腔連接一個2000L/s抽氣幫浦的圓形短管(氣導為 1000 L/s),想要提高短管的氣導,以下答案使用的方法哪個可以得到最高的管路氣導?",
+    "options": {
+      "A": "短管長度減半",
+      "B": "短管直徑加倍",
+      "C": "短管截面積加倍",
+      "D": "短管長度變1/3倍"
+    },
+    "answer": "B"
+  },
+  {
+    "question": "61. 將一個抽氣速率300L/s的幫浦以一根長100cm、內徑4 cm的真空圓管連接真空腔抽真空,則真空腔的有效抽氣速率約為多少 L/s? 以下哪個答案最靠近?",
+    "options": {
+      "A": "300",
+      "B": "100",
+      "C": "50",
+      "D": "10"
+    },
+    "answer": "D"
+  },
+  {
+    "question": "62. 真空系統中氣體分子由氣壓高(P1)流動到氣壓低(P2)的通量(Q)與氣導(C)的關係為:",
+    "options": {
+      "A": "Q = C(1/P1-1/P2)",
+      "B": "Q = C (P1-P2)",
+      "C": "Q=C （P1/P2）",
+      "D": "C = Q (P1-P2)"
+    },
+    "answer": "B"
+  },
+  {
+    "question": "63. 真空系統抽真空到1mTorr時,腔體內材料表面覆蓋一 「層氣體分子約需多少時間?",
+    "options": {
+      "A": "1秒",
+      "B": "0.1秒",
+      "C": "0.01秒",
+      "D": "0.001秒"
+    },
+    "answer": "D"
+  },
+  {
+    "question": "64. 真空系統抽真空時,主要的氣體來源就以下的答案中哪一個很難避免?",
+    "options": {
+      "A": "漏氣",
+      "B": "幫浦回流氣體",
+      "C": "材料釋氣",
+      "D": "腔體滲透"
+    },
+    "answer": "C"
+  },
+  {
+    "question": "65. 一個具空腔體積（V）連接抽氣速率（D）的常浦抽氣，則體積抽氣所需的時間常數估算為：",
+    "options": {
+      "A": "V/S",
+      "B": "S/V",
+      "C": "V S",
+      "D": ""
+    },
+    "answer": "A"
+  },
+  {
+    "question": "66. 真空系統抽真空時，腔體表面吸附的氣體分子脫附離開的方向與表面的夾角多趨近幾度：",
+    "options": {
+      "A": "0度（平行）",
+      "B": "90度（垂直）",
+      "C": "45度",
+      "D": "30度"
+    },
+    "answer": "B"
+  },
+  {
+    "question": "67. 真空系統由一大氣壓開始抽真空到後來氣壓下降速率變慢，主要是哪種釋氣分子的影響？",
+    "options": {
+      "A": "氫氣",
+      "B": "氧氣",
+      "C": "水氣",
+      "D": "氮氣"
+    },
+    "answer": "C"
+  },
+  {
+    "question": "68. 真空蒸鍍時為減少真空系統中殘留水氣分子的吸附滲入膜層，改善的辦法哪個較有效？",
+    "options": {
+      "A": "選用冷凍幫浦抽水氣",
+      "B": "先均溫烘烤真空腔抽除水氣",
+      "C": "通入氮氣沖淡水氣",
+      "D": "提高蒸鍍速率"
+    },
+    "answer": "B"
+  },
+  {
+    "question": "69. 下列哪種不是常用引發電漿的電源供應器？",
+    "options": {
+      "A": "直流",
+      "B": "射頻",
+      "C": "微波",
+      "D": "遠紅外線"
+    },
+    "answer": "D"
+  },
+  {
+    "question": "70. 下列何者不是電漿的特性？",
+    "options": {
+      "A": "人造電漿游離率可達100%",
+      "B": "帶負電粒子數與帶正電粒子數相等",
+      "C": "有韒層",
+      "D": "電漿本體電位是最高的"
+    },
+    "answer": "A"
+  },
+  {
+    "question": "72. 下列何者不是電漿的用途？",
+    "options": {
+      "A": "蝕刻",
+      "B": "鍍膜",
+      "C": "離子佈植",
+      "D": "液相磊晶"
+    },
+    "answer": "D"
+  },
+  {
+    "question": "73. 下列何者是計算德拜長度所需的參數？",
+    "options": {
+      "A": "電子溫度",
+      "B": "磁導率",
+      "C": "重力加速度",
+      "D": "折射係數"
+    },
+    "answer": "A"
+  },
+  {
+    "question": "74. 人造電漿的德拜長度約為多少？",
+    "options": {
+      "A": "100公里",
+      "B": "1公里",
+      "C": "0.1公尺",
+      "D": "0.1公厘"
+    },
+    "answer": "D"
+  },
+  {
+    "question": "75. 人造電漿的電子溫度約為幾伏特？",
+    "options": {
+      "A": "幾百千伏特",
+      "B": "幾千伏特",
+      "C": "幾伏特",
+      "D": "零點零零幾伏特"
+    },
+    "answer": "C"
+  },
+  {
+    "question": "76. 人造電漿的電子密度約為多少？",
+    "options": {
+      "A": "每立方公分1E10個",
+      "B": "每立方公尺1E10個",
+      "C": "每立方公里1E10個",
+      "D": "每立方微米1E10個"
+    },
+    "answer": "A"
+  },
+  {
+    "question": "77. 旋翼（Vane）式油封幫浦可由一大氣壓抽氣，其排氣的原理在以下的答案中哪個不正確？",
+    "options": {
+      "A": "靠油的黏滯性密封",
+      "B": "靠油的高蒸氣壓",
+      "C": "靠油潤滑轉子",
+      "D": "靠油的高熱容量"
+    },
+    "answer": "B"
+  },
+  {
+    "question": "78. 在利用氫氣產生電漿製程的真空系統，以下哪個幫浦不適用？",
+    "options": {
+      "A": "魯式幫浦",
+      "B": "離子幫浦",
+      "C": "鈦昇華幫浦",
+      "D": "渦輪分子幫浦"
+    },
+    "answer": "B"
+  },
+  {
+    "question": "79. 下列何者不是冷凍幫浦的抽氣方式？",
+    "options": {
+      "A": "凝結",
+      "B": "吸附",
+      "C": "捕捉",
+      "D": "改變動量"
+    },
+    "answer": "D"
+  },
+  {
+    "question": "80. 真空系統中使用材料的選擇，以下何者與氣壓無關？",
+    "options": {
+      "A": "材料蒸氣壓",
+      "B": "表面釋氣率",
+      "C": "表面粗糙度",
+      "D": "材料導電度"
+    },
+    "answer": "D"
+  },
+
+  {
+    "question": "71. 以下哪種材料因蒸氣壓高而不適用於真空系統？",
+    "options": {
+      "A": "鈷",
+      "B": "銅",
+      "C": "鋅",
+      "D": "銦"
+    },
+    "answer": "C"
+  },
+  {
+    "question": "72. 一般高真空系統常使用 O-Ring 軟墊圈，以下哪個缺點較討厭？",
+    "options": {
+      "A": "密封度不良",
+      "B": "不耐高溫烘烤",
+      "C": "會滲透氦氣",
+      "D": "用在方形法蘭"
+    },
+    "answer": "C"
+  },
+  {
+    "question": "73. 不銹鋼高真空腔使用 Conflat（有刀口）金屬法蘭時應使用哪種材料的密封墊圈？",
+    "options": {
+      "A": "無氧銅",
+      "B": "不銹鋼",
+      "C": "Viton O-Ring",
+      "D": "氧化鋁"
+    },
+    "answer": "A"
+  },
+  {
+    "question": "74. 圓形的 Conflat 金屬法蘭有多種標準規格，以下何者不是？",
+    "options": {
+      "A": "16CF",
+      "B": "63CF",
+      "C": "135CF",
+      "D": "200CF"
+    },
+    "answer": "C"
+  },
+  {
+    "question": "75. 超高真空腔使用 Conflat 金屬法蘭及配合的密封金屬墊圈，為了烘烤不漏氣，兩種金屬材質需有一個相近的特性為何：",
+    "options": {
+      "A": "彈性係數",
+      "B": "熔點",
+      "C": "硬度",
+      "D": "熱膨脹係數"
+    },
+    "answer": "D"
+  },
+  {
+    "question": "76. 一般高真空系統使用機械導引傳送樣品，其傳動部位真空界面的密封方式以下何者不可行？",
+    "options": {
+      "A": "磁流體",
+      "B": "Bellows",
+      "C": "O-ring",
+      "D": "滾珠軸承"
+    },
+    "answer": "D"
+  },
+  {
+    "question": "77. 一樣長度的成型軟管（Formed Bellows）與銲接軟管（Welded Bellows）哪一個伸縮量較大？",
+    "options": {
+      "A": "成型軟管",
+      "B": "銲接軟管",
+      "C": "不一定",
+      "D": "都一樣"
+    },
+    "answer": "B"
+  },
+  {
+    "question": "78. 下列何種金屬材料少見於真空中？",
+    "options": {
+      "A": "6063鋁合金",
+      "B": "304不銹鋼",
+      "C": "鑄鐵",
+      "D": "無氧銅"
+    },
+    "answer": "C"
+  },
+  {
+    "question": "79. 真空系統組成的要件，以下何者為非？",
+    "options": {
+      "A": "真空腔",
+      "B": "真空幫浦",
+      "C": "真空計",
+      "D": "真空閥"
+    },
+    "answer": "D"
+  },
+  {
+    "question": "80. 要檢測真空系統是否有漏氣，以下何種方法不可靠？",
+    "options": {
+      "A": "氦氣測漏儀",
+      "B": "四極質譜儀",
+      "C": "輝光放電管",
+      "D": "塗抹泡沫法"
+    },
+    "answer": "D"
+  },
+  {
+    "question": "81. 氣壓增建法（Pressure Buildup Method） 實驗的好處為：",
+    "options": {
+      "A": "估算系統釋氣率或漏氣率",
+      "B": "隔離幫浦的氣體回流",
+      "C": "提高真空計測量精度",
+      "D": "估算系統抽氣的時間常數"
+    },
+    "answer": "A"
+  },
+  {
+    "question": "82. 一個差分抽氣（Differential Pumping）系統需依不同部位的局部氣壓範圍來選用幫浦，主要是哪類幫浦？",
+    "options": {
+      "A": "機械幫浦",
+      "B": "離子幫浦",
+      "C": "吸附幫浦",
+      "D": "冷凍幫浦"
+    },
+    "answer": "A"
+  },
+  {
+    "question": "83. 當真空系統以 100L/s 幫浦抽真空，但因系統有漏氣使得最低氣壓停留在 2E-7 mbar。則系統漏氣率約為多少？",
+    "options": {
+      "A": "1E-5 mbar L/s",
+      "B": "2E-5 atm cc/s",
+      "C": "4E-5 Torr L/s",
+      "D": "2E-3 Pa m/s"
+    },
+    "answer": "B"
+  },
+  {
+    "question": "84. 維護真空系統若要使用氦氣測漏儀測漏時，測漏儀最好接哪個位置？",
+    "options": {
+      "A": "前級粗抽機械幫浦前端",
+      "B": "真空腔閥門外側",
+      "C": "可調漏氣閥外側",
+      "D": "高真空幫浦前端"
+    },
+    "answer": "A"
+  },
+  {
+    "question": "85. 何謂真空的定義？",
+    "options": {
+      "A": "一容器內的壓力低於一大氣壓",
+      "B": "一容器中無水氣",
+      "C": "一容器中溫度加熱至攝氏100度",
+      "D": "一容器中無聲波傳遞"
+    },
+    "answer": "A"
+  },
+  {
+    "question": "86. 國際上真空度使用的通用單位（SI）為何？",
+    "options": {
+      "A": "Torr",
+      "B": "Pa",
+      "C": "mbar",
+      "D": "atm"
+    },
+    "answer": "B"
+  },
+  {
+    "question": "87. 溫度攝氏20度，壓力為750Torr時，氣流型態為何？",
+    "options": {
+      "A": "過度流",
+      "B": "分子流",
+      "C": "黏滞流",
+      "D": "以上皆非"
+    },
+    "answer": "C"
+  },
+  {
+    "question": "88. 真空度的物理單位顯示為何？",
+    "options": {
+      "A": "氣體數目/時間",
+      "B": "氣體數目/單位面積",
+      "C": "力/（單位面積*時間）",
+      "D": "力/單位面積"
+    },
+    "answer": "D"
+  },
+  {
+    "question": "89. 下列何者非等值換算單位？",
+    "options": {
+      "A": "760 mbar",
+      "B": "1 atm",
+      "C": "760 torr",
+      "D": "760 mmHg"
+    },
+    "answer": "A"
+  },
+  {
+    "question": "90. 真空中平均自由徑越長代表？",
+    "options": {
+      "A": "氣體濃度越高",
+      "B": "氣體壓力越低",
+      "C": "氣體種類越多",
+      "D": "氣體活性越大"
+    },
+    "answer": "B"
+  },
+  {
+    "question": "91. 在SI制中，氣流的單位為何？",
+    "options": {
+      "A": "(Pa•m)/s",
+      "B": "Pa/s",
+      "C": "m³/s",
+      "D": ""
+    },
+    "answer": "C"
+  },
+  {
+    "question": "92. 在SI 制中，抽氣速率的單位為何？",
+    "options": {
+      "A": "m/s",
+      "B": "m³/s",
+      "C": "1/s",
+      "D": "L/s"
+    },
+    "answer": "D"
+  },
+  {
+    "question": "93. 在SI制中，氣導的單位為何？",
+    "options": {
+      "A": "m³/(s•Pa)",
+      "B": "1/(s•Pa)",
+      "C": "m/(s•Pa)",
+      "D": "Pa/s"
+    },
+    "answer": "A"
+  },
+  {
+    "question": "94. 想從一大氣壓將系統降至粗略真空範圍需要選用什麼樣的幫浦？",
+    "options": {
+      "A": "擴散幫浦",
+      "B": "乾式幫浦",
+      "C": "冷凍幫浦",
+      "D": "離子幫浦"
+    },
+    "answer": "B"
+  },
+  {
+    "question": "95. 何者為高真空幫浦？",
+    "options": {
+      "A": "油封式機械幫浦",
+      "B": "魯式幫浦",
+      "C": "冷凍幫浦",
+      "D": "爪式幫浦"
+    },
+    "answer": "C"
+  },
+  {
+    "question": "96. 何者為儲氣式幫浦？",
+    "options": {
+      "A": "冷凍幫浦",
+      "B": "渦輪幫浦",
+      "C": "爪式幫浦",
+      "D": "擴散幫浦"
+    },
+    "answer": "A"
+  }
+[
+  {
+    "question": "71. 以下哪種材料因蒸氣壓高而不適用於真空系統？",
+    "options": {
+      "A": "鈷",
+      "B": "銅",
+      "C": "鋅",
+      "D": "銦"
+    },
+    "answer": "C"
+  },
+  {
+    "question": "72. 一般高真空系統常使用 O-Ring 軟墊圈，以下哪個缺點較討厭？",
+    "options": {
+      "A": "密封度不良",
+      "B": "不耐高溫烘烤",
+      "C": "會滲透氦氣",
+      "D": "用在方形法蘭"
+    },
+    "answer": "C"
+  },
+  {
+    "question": "73. 不銹鋼高真空腔使用 Conflat（有刀口）金屬法蘭時應使用哪種材料的密封墊圈？",
+    "options": {
+      "A": "無氧銅",
+      "B": "不銹鋼",
+      "C": "Viton O-Ring",
+      "D": "氧化鋁"
+    },
+    "answer": "A"
+  },
+  {
+    "question": "74. 圓形的 Conflat 金屬法蘭有多種標準規格，以下何者不是？",
+    "options": {
+      "A": "16CF",
+      "B": "63CF",
+      "C": "135CF",
+      "D": "200CF"
+    },
+    "answer": "C"
+  },
+  {
+    "question": "75. 超高真空腔使用 Conflat 金屬法蘭及配合的密封金屬墊圈，為了烘烤不漏氣，兩種金屬材質需有一個相近的特性為何：",
+    "options": {
+      "A": "彈性係數",
+      "B": "熔點",
+      "C": "硬度",
+      "D": "熱膨脹係數"
+    },
+    "answer": "D"
+  },
+  {
+    "question": "76. 一般高真空系統使用機械導引傳送樣品，其傳動部位真空界面的密封方式以下何者不可行？",
+    "options": {
+      "A": "磁流體",
+      "B": "Bellows",
+      "C": "O-ring",
+      "D": "滾珠軸承"
+    },
+    "answer": "D"
+  },
+  {
+    "question": "77. 一樣長度的成型軟管（Formed Bellows）與銲接軟管（Welded Bellows）哪一個伸縮量較大？",
+    "options": {
+      "A": "成型軟管",
+      "B": "銲接軟管",
+      "C": "不一定",
+      "D": "都一樣"
+    },
+    "answer": "B"
+  },
+  {
+    "question": "78. 下列何種金屬材料少見於真空中？",
+    "options": {
+      "A": "6063鋁合金",
+      "B": "304不銹鋼",
+      "C": "鑄鐵",
+      "D": "無氧銅"
+    },
+    "answer": "C"
+  },
+  {
+    "question": "79. 真空系統組成的要件，以下何者為非？",
+    "options": {
+      "A": "真空腔",
+      "B": "真空幫浦",
+      "C": "真空計",
+      "D": "真空閥"
+    },
+    "answer": "D"
+  },
+  {
+    "question": "80. 要檢測真空系統是否有漏氣，以下何種方法不可靠？",
+    "options": {
+      "A": "氦氣測漏儀",
+      "B": "四極質譜儀",
+      "C": "輝光放電管",
+      "D": "塗抹泡沫法"
+    },
+    "answer": "D"
+  },
+  {
+    "question": "81. 氣壓增建法（Pressure Buildup Method） 實驗的好處為：",
+    "options": {
+      "A": "估算系統釋氣率或漏氣率",
+      "B": "隔離幫浦的氣體回流",
+      "C": "提高真空計測量精度",
+      "D": "估算系統抽氣的時間常數"
+    },
+    "answer": "A"
+  },
+  {
+    "question": "82. 一個差分抽氣（Differential Pumping）系統需依不同部位的局部氣壓範圍來選用幫浦，主要是哪類幫浦？",
+    "options": {
+      "A": "機械幫浦",
+      "B": "離子幫浦",
+      "C": "吸附幫浦",
+      "D": "冷凍幫浦"
+    },
+    "answer": "A"
+  },
+  {
+    "question": "83. 當真空系統以 100L/s 幫浦抽真空，但因系統有漏氣使得最低氣壓停留在 2E-7 mbar。則系統漏氣率約為多少？",
+    "options": {
+      "A": "1E-5 mbar L/s",
+      "B": "2E-5 atm cc/s",
+      "C": "4E-5 Torr L/s",
+      "D": "2E-3 Pa m/s"
+    },
+    "answer": "B"
+  },
+  {
+    "question": "84. 維護真空系統若要使用氦氣測漏儀測漏時，測漏儀最好接哪個位置？",
+    "options": {
+      "A": "前級粗抽機械幫浦前端",
+      "B": "真空腔閥門外側",
+      "C": "可調漏氣閥外側",
+      "D": "高真空幫浦前端"
+    },
+    "answer": "A"
+  },
+  {
+    "question": "85. 何謂真空的定義？",
+    "options": {
+      "A": "一容器內的壓力低於一大氣壓",
+      "B": "一容器中無水氣",
+      "C": "一容器中溫度加熱至攝氏100度",
+      "D": "一容器中無聲波傳遞"
+    },
+    "answer": "A"
+  },
+  {
+    "question": "86. 國際上真空度使用的通用單位（SI）為何？",
+    "options": {
+      "A": "Torr",
+      "B": "Pa",
+      "C": "mbar",
+      "D": "atm"
+    },
+    "answer": "B"
+  },
+  {
+    "question": "87. 溫度攝氏20度，壓力為750Torr時，氣流型態為何？",
+    "options": {
+      "A": "過度流",
+      "B": "分子流",
+      "C": "黏滞流",
+      "D": "以上皆非"
+    },
+    "answer": "C"
+  },
+  {
+    "question": "88. 真空度的物理單位顯示為何？",
+    "options": {
+      "A": "氣體數目/時間",
+      "B": "氣體數目/單位面積",
+      "C": "力/（單位面積*時間）",
+      "D": "力/單位面積"
+    },
+    "answer": "D"
+  },
+  {
+    "question": "89. 下列何者非等值換算單位？",
+    "options": {
+      "A": "760 mbar",
+      "B": "1 atm",
+      "C": "760 torr",
+      "D": "760 mmHg"
+    },
+    "answer": "A"
+  },
+  {
+    "question": "90. 真空中平均自由徑越長代表？",
+    "options": {
+      "A": "氣體濃度越高",
+      "B": "氣體壓力越低",
+      "C": "氣體種類越多",
+      "D": "氣體活性越大"
+    },
+    "answer": "B"
+  },
+  {
+    "question": "91. 在SI制中，氣流的單位為何？",
+    "options": {
+      "A": "(Pa•m)/s",
+      "B": "Pa/s",
+      "C": "m³/s",
+      "D": ""
+    },
+    "answer": "C"
+  },
+  {
+    "question": "92. 在SI 制中，抽氣速率的單位為何？",
+    "options": {
+      "A": "m/s",
+      "B": "m³/s",
+      "C": "1/s",
+      "D": "L/s"
+    },
+    "answer": "D"
+  },
+  {
+    "question": "93. 在SI制中，氣導的單位為何？",
+    "options": {
+      "A": "m³/(s•Pa)",
+      "B": "1/(s•Pa)",
+      "C": "m/(s•Pa)",
+      "D": "Pa/s"
+    },
+    "answer": "A"
+  },
+  {
+    "question": "94. 想從一大氣壓將系統降至粗略真空範圍需要選用什麼樣的幫浦？",
+    "options": {
+      "A": "擴散幫浦",
+      "B": "乾式幫浦",
+      "C": "冷凍幫浦",
+      "D": "離子幫浦"
+    },
+    "answer": "B"
+  },
+  {
+    "question": "95. 何者為高真空幫浦？",
+    "options": {
+      "A": "油封式機械幫浦",
+      "B": "魯式幫浦",
+      "C": "冷凍幫浦",
+      "D": "爪式幫浦"
+    },
+    "answer": "C"
+  },
+  {
+    "question": "96. 何者為儲氣式幫浦？",
+    "options": {
+      "A": "冷凍幫浦",
+      "B": "渦輪幫浦",
+      "C": "爪式幫浦",
+      "D": "擴散幫浦"
+    },
+    "answer": "A"
+  },[
+  {
+    "question": "97. 何者為排氣式幫浦？",
+    "options": {
+      "A": "冷凍幫浦",
+      "B": "魯式幫浦",
+      "C": "離子幫浦",
+      "D": "Getter幫浦"
+    },
+    "answer": "B"
+  },
+  {
+    "question": "98. 真空計的量測方式通常可分為直接量測及間接量測兩種，下列何種真空儀表的量測方式是屬於間接幫浦？",
+    "options": {
+      "A": "熱傳導真空計",
+      "B": "離子真空計",
+      "C": "黏滯性真空計",
+      "D": "以上皆是"
+    },
+    "answer": "D"
+  },
+  {
+    "question": "99. 下列何種真空儀表適合用來量測 1×10^(-5) Torr ~ 1×10^(-7) Torr 範圍的壓力值？",
+    "options": {
+      "A": "派藍尼真空計",
+      "B": "熱電偶真空計",
+      "C": "離子真空計",
+      "D": "包登管式真空計"
+    },
+    "answer": "C"
+  },
+  {
+    "question": "100. 下列何種真空儀表是藉由高電壓解離氣體分子形成離子，再利用偵測氣體分子解離的離子數目來推測真空環境中所含的氣體量，間接求出壓力值？",
+    "options": {
+      "A": "冷陰極離子真空計",
+      "B": "熱離子真空計",
+      "C": "派藍尼真空計",
+      "D": "電容真空計"
+    },
+    "answer": "A"
+  }
+]]]
+
+    let current = 0;
+
+    function showQuestion() {
+      const q = questions[current];
+      document.getElementById('question').innerText = q.question;
+
+      const optionsDiv = document.getElementById('options');
+      optionsDiv.innerHTML = '';
+      for (const [key, text] of Object.entries(q.options)) {
+        const div = document.createElement('div');
+        div.className = 'option';
+        div.innerText = `${key}. ${text}`;
+        div.onclick = () => {
+          if (key === q.answer) {
+            div.classList.add('correct');
+          } else {
+            div.classList.add('incorrect');
+          }
+          Array.from(optionsDiv.children).forEach(opt => opt.onclick = null);
+        };
+        optionsDiv.appendChild(div);
+      }
+    }
+
+    function nextQuestion() {
+      current = (current + 1) % questions.length;
+      showQuestion();
+    }
+
+    showQuestion();
+  </script>
+
+</body>
+</html>
